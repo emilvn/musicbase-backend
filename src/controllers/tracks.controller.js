@@ -8,56 +8,57 @@ function getAllTracks(req, res, _next){
     );
 }
 
-// app.get("/users/:id", getOne);
-// function getOne(req, res, _next){
-//     const id = Number(req.params.id);
-//     connection.query(
-//         "SELECT * FROM users WHERE id = ?", [id],
-//         (err, result, _fields)=>{
-//             if(err) throw err;
-//             res.json(result);
-//         }
-//     );
-// }
+function getSpecificTrack(req, res, _next){
+  const id = Number(req.params.id);
 
-// app.post("/users", insertUser);
+  connection.query(
+    "SELECT * FROM tracks WHERE id = ?", [id],
+    (err, result, _fields) => {
+      if(err) throw err;
+      res.json(result)
+    }
+  )
+  
+}
 
-// function insertUser(req, res, _next){
-//     const newUser = req.body;
-//     connection.query(
-//         "INSERT INTO users (track_name, image, mail, title) VALUES (?,?,?,?);",
-//         [newUser.name, newUser.image, newUser.mail, newUser.title],
-//         (err, result, _fields) => {
-//             if(err) throw err;
-//             res.json(result);
-//         }
-//     );
-// }
+function addTrack(req, res, _next){
+  const newTrack = req.body;
 
-// function updateUser(req, res, _next){
-//     const id = Number(req.params.id);
-//     const updatedUser = req.body;
+  connection.query(
+    "INSERT INTO tracks (id, track_name) VALUES (?, ?);"
+    [newTrack.id, newTrack.track_name],
+    (err, resulst, _fields) => {
+      if(err) throw err;
+      res.json(resulst)
+    }
 
-//     connection.query(
-//         "UPDATE users SET name = ?, image = ?, mail = ?, title = ? WHERE id = ?",
-//         [updatedUser.name, updatedUser.image, updatedUser.mail, updatedUser.title, id],
-//         (err, result, _fields) => {
-//             if (err) throw err;
-//             res.json();
-//         }
-//     );
-// }
+  )
+}
 
-// app.delete("/users/:id", deleteUser);
 
-// function deleteUser(req, res, _next){
-//     const id = Number(req.params.id);
-//     connection.query(
-//         "DELETE FROM users WHERE id = ?",
-//         [id],
-//         (err, result, _fields) => {
-//             if(err) throw err;
-//             res.json(result);
-//         }
-//     );
-// }
+function updateTracks (req, res, _next){
+  const id = Number(req.params.id);
+  const updateTrack = req.body;
+
+  connection.query(
+    "UPDATE tracks SET track_name = ?, WHERE id = ?",
+    [updateTrack.track_name, id],
+    (err, result, _fields) => {
+      if(err)throw err;
+      res.json();
+    }
+  );
+}
+
+function deleteTrack(req, res, _next){
+    const id = Number(req.params.id);
+    connection.query(
+        "DELETE FROM tracks WHERE id = ?",
+        [id],
+        (err, result, _fields) => {
+            if(err) throw err;
+            res.json(result);
+        }
+    );
+}
+
