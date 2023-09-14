@@ -1,5 +1,6 @@
 import { connection } from "../../database.js";
 
+//Handle getting all the tracks
 export function getAllTracks(request, response) {
     const query = "SELECT * FROM tracks;";
     connection.query(query, (error, results, fields) => {
@@ -11,6 +12,7 @@ export function getAllTracks(request, response) {
     });
 }
 
+//Handle getting a specific track 
 export function getSpecificTrack(request, response) {
     const id = request.params.id;
     const query = "SELECT * FROM tracks WHERE id = ?;";
@@ -24,6 +26,7 @@ export function getSpecificTrack(request, response) {
     });
 }
 
+//handle adding a track to the database
 export function addTrack(request, response) {
     const tracks = request.body;
     const query = "INSERT INTO tracks(track_name) VALUES(?);";
@@ -37,6 +40,7 @@ export function addTrack(request, response) {
     });
 }
 
+//handle updating a specifik track using ID
 export function updateTracksByID(request, response) {
     const id = request.params.id;
     const track = request.body;
@@ -52,7 +56,7 @@ export function updateTracksByID(request, response) {
     });
 }
 
-
+//handle deleting a specific track using ID
 export function deleteTrackByID(request, response) {
     const id = request.params.id;
     const query = "DELETE FROM tracks WHERE id =?;";

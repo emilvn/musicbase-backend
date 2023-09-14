@@ -10,6 +10,7 @@ import express from "express";
 
 export const tracksRouter = express.Router();
 
+//handle the routing
 tracksRouter.get("/", getAllTracks)
 tracksRouter.get("/:id", getSpecificTrack)
 tracksRouter.post("/", addTrack)
