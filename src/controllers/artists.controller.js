@@ -1,22 +1,19 @@
-import mysql from "mysql2"
-import cors from "cors"
-import express from "express"
+import { connection } from "../../database.js";
 
+export function getAllArtists(request, response) {
+    const query = "SELECT * FROM artists;";
+    connection.query(query, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        } else {
+            response.json(results);
+        }
+    });
+}
 
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "musicbase_db",
-    password: "mart0808",
-    multipleStatements: true,
-});
-
-
-
-
-app.get("/users/:id", (request, response) => {
+export function getArtistById(request, response) {
     const id = request.params.id;
-    const query = "SELECT * FROM users WHERE id = ?;";
+    const query = "SELECT * FROM artists WHERE id = ?;";
     const values = [id];
     connection.query(query, values, (error, results) => {
         if (error) {
@@ -25,12 +22,12 @@ app.get("/users/:id", (request, response) => {
             response.json(results[0]);
         }
     });
-});
+}
 
-app.post("/users", (request, response) => {
-    const user = request.body;
-    const query = "INSERT INTO users(name, mail, title, image) VALUES(?,?,?,?);";
-    const values = [user.name, user.mail, user.title, user.image];
+export function createArtist(request, response) {
+    const artist = request.body;
+    const query = "INSERT INTO artists(name, image) VALUES(?,?);";
+    const values = [artist.name, artist.image];
     connection.query(query, values, (error, results) => {
         if (error) {
             console.log(error);
@@ -38,13 +35,13 @@ app.post("/users", (request, response) => {
             response.json(results);
         }
     });
-});
+}
 
-app.put("/users/:id", (request, response) => {
+export function updateArtistById(request, response) {
     const id = request.params.id;
-    const user = request.body;
-    const query = "UPDATE users SET name = ?, title = ?, mail = ?, image =? WHERE id = ? ";
-    const values = [user.name, user.mail, user.title, user.image, id];
+    const artist = request.body;
+    const query = "UPDATE artists SET name = ?, image =? WHERE id = ? ";
+    const values = [artist.name, artist.image, id];
 
     connection.query(query, values, (error, results) => {
         if (error) {
@@ -53,11 +50,11 @@ app.put("/users/:id", (request, response) => {
             response.json(results);
         }
     });
-});
+}
 
-app.delete("/users/:id", (request, response) => {
+export function deleteArtistById(request, response) {
     const id = request.params.id;
-    const query = "DELETE FROM users WHERE id =?;";
+    const query = "DELETE FROM artists WHERE id =?;";
     const values = [id];
 
     connection.query(query, values, (error, results) => {
@@ -67,4 +64,4 @@ app.delete("/users/:id", (request, response) => {
             response.json(results);
         }
     });
-});
+}
