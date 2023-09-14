@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import { tracksRouter } from "./src/routers/tracks.router.js";
 
 const app = express();
 const port = 3000;
@@ -11,7 +12,7 @@ app.use(cors());
 
 app.use(morgan("tiny"));
 
-//app.use("/tracks/", tracksRouter);
+app.use("/tracks/", tracksRouter);
 
 //app.use("/artists/", artistsRouter);
 
