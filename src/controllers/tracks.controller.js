@@ -1,6 +1,4 @@
-app.get("/users", getAll);
-
-function getAll(req, res, _next){
+function getAllTracks(req, res, _next){
     connection.query(
         "SELECT * FROM tracks",
         (err, results, _fields) => {
