@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import {errorHandler} from "./src/middleware/errorhandler.js";
-import {connection} from "./config/database.js";
 
 const app = express();
 const port = 3000;
