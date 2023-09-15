@@ -1,67 +1,75 @@
 import {connection} from "../../config/database.js";
+import {throwIfArtistNotFound, validateArtist} from "../validation/artists.validation.js";
 
-export function getAllArtists(request, response) {
+export function getAllArtists(req, res, next) {
     const query = "SELECT * FROM artists;";
-    connection.query(query, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.json(results);
-        }
-    });
+    try{
+        connection.query(query, (error, results, _fields) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    }catch(err){
+        next(err);// forward error to error handler middleware
+    }
 }
 
-export function getArtistById(request, response) {
-    const id = request.params.id;
+export function getArtistById(req, res, next) {
+    const id = req.params.id;
     const query = "SELECT * FROM artists WHERE id = ?;";
     const values = [id];
-    connection.query(query, values, (error, results) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.json(results[0]);
-        }
-    });
+    try{
+        connection.query(query, values, (error, results, _fields) => {
+            if (error) throw error;
+            throwIfArtistNotFound(results);
+            res.json(results[0]);
+        });
+    }catch(err){
+        next(err);// forward error to error handler middleware
+    }
+
 }
 
-export function createArtist(request, response) {
-    const artist = request.body;
+export function createArtist(req, res, next) {
+    const artist = req.body;
     const query = "INSERT INTO artists(name, image) VALUES(?,?);";
     const values = [artist.name, artist.image];
-    connection.query(query, values, (error, results) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.json(results);
-        }
-    });
+    try{
+        validateArtist(artist); // throws if artist details are invalid
+        connection.query(query, values, (error, results, _fields) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    }catch(err){
+        next(err);// forward error to error handler middleware
+    }
 }
 
-export function updateArtistById(request, response) {
-    const id = request.params.id;
-    const artist = request.body;
+export function updateArtistById(req, res, next) {
+    const id = req.params.id;
+    const artist = req.body;
     const query = "UPDATE artists SET name = ?, image =? WHERE id = ? ";
     const values = [artist.name, artist.image, id];
-
-    connection.query(query, values, (error, results) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.json(results);
-        }
-    });
+    try{
+        validateArtist(artist); // throws if artist details are invalid
+        connection.query(query, values, (error, results, _fields) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    }catch(err){
+        next(err);// forward error to error handler middleware
+    }
 }
 
-export function deleteArtistById(request, response) {
-    const id = request.params.id;
+export function deleteArtistById(req, res, next) {
+    const id = req.params.id;
     const query = "DELETE FROM artists WHERE id =?;";
     const values = [id];
-
-    connection.query(query, values, (error, results) => {
-        if (error) {
-            console.log(error);
-        } else {
-            response.json(results);
-        }
-    });
+    try{
+        connection.query(query, values, (error, results) => {
+            if (error) throw error;
+                res.json(results);
+        });
+    }catch(err){
+        next(err);// forward error to error handler middleware
+    }
 }
