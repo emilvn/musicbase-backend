@@ -1,6 +1,5 @@
 import {connection} from "../../config/database.js";
 import {throwIfTrackNotFound, validateTrackName} from "../validation/tracks.validation.js";
-import {throwIfArtistNotFound} from "../validation/artists.validation.js";
 
 //Handle getting all the tracks
 export function getAllTracks(req, res, next) {
@@ -41,8 +40,8 @@ export function addTrack(req, res, next) {
     const query = "INSERT INTO tracks(name) VALUES(?);";
     const values = [track.name];
     try {
-        validateTrackName(track.name); // throws if name too long/short
-        connection.query(query, values, (error, results) => {
+        validateTrackName(track); // throws if name too long/short
+        connection.query(query, values, (error, results, _fields) => {
             if (error) next(error);
             else res.status(201).json(results);
         });
@@ -55,10 +54,10 @@ export function addTrack(req, res, next) {
 export function updateTracksByID(req, res, next) {
     const id = req.params.id;
     const track = req.body;
-    const query = "UPDATE tracks SET track_name = ? WHERE id = ?;";
+    const query = "UPDATE tracks SET name = ? WHERE id = ?;";
     const values = [track.name, id];
     try{
-        validateTrackName(track.name); // throws if name too long/short
+        validateTrackName(track); // throws if name too long/short
         connection.query(query, values, (error, results, _fields) => {
             if (error) next(error);
             else res.json(results);
