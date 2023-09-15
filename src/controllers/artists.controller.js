@@ -5,8 +5,8 @@ export function getAllArtists(req, res, next) {
     const query = "SELECT * FROM artists;";
     try{
         connection.query(query, (error, results, _fields) => {
-            if (error) throw error;
-            res.json(results);
+            if (error) next(error);
+            else res.json(results);
         });
     }catch(err){
         next(err);// forward error to error handler middleware
@@ -19,9 +19,13 @@ export function getArtistById(req, res, next) {
     const values = [id];
     try{
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
-            throwIfArtistNotFound(results);
-            res.json(results[0]);
+            try{
+                throwIfArtistNotFound(results)
+            }catch(err){
+                next(err);
+            }
+            if (error) next(error);
+            else res.json(results[0]);
         });
     }catch(err){
         next(err);// forward error to error handler middleware
@@ -36,8 +40,8 @@ export function createArtist(req, res, next) {
     try{
         validateArtist(artist); // throws if artist details are invalid
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
-            res.json(results);
+            if (error) next(error);
+            else res.json(results);
         });
     }catch(err){
         next(err);// forward error to error handler middleware
@@ -52,8 +56,8 @@ export function updateArtistById(req, res, next) {
     try{
         validateArtist(artist); // throws if artist details are invalid
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
-            res.json(results);
+            if (error) next(error);
+            else res.json(results);
         });
     }catch(err){
         next(err);// forward error to error handler middleware
@@ -66,8 +70,8 @@ export function deleteArtistById(req, res, next) {
     const values = [id];
     try{
         connection.query(query, values, (error, results) => {
-            if (error) throw error;
-                res.json(results);
+            if (error) next(error);
+            else res.json(results);
         });
     }catch(err){
         next(err);// forward error to error handler middleware

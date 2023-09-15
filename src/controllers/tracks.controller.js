@@ -1,12 +1,13 @@
 import {connection} from "../../config/database.js";
 import {throwIfTrackNotFound, validateTrackName} from "../validation/tracks.validation.js";
+import {throwIfArtistNotFound} from "../validation/artists.validation.js";
 
 //Handle getting all the tracks
 export function getAllTracks(req, res, next) {
     try{
         const query = "SELECT * FROM tracks;";
         connection.query(query, (error, results, _fields) => {
-            if (error) throw error;
+            if (error) next(error);
             res.json(results);
         });
     }catch(err){
@@ -21,12 +22,16 @@ export function getSpecificTrack(req, res, next) {
     const values = [id];
     try{
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
-            throwIfTrackNotFound(results);
-            res.json(results[0]);
+            try{
+                throwIfTrackNotFound(results);
+            }catch(err){
+                next(err);
+            }
+            if (error) next(error);
+            else res.json(results[0]);
         });
     }catch(err){
-        next(err); // forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -35,13 +40,13 @@ export function addTrack(req, res, next) {
     const track = req.body;
     const query = "INSERT INTO tracks(name) VALUES(?);";
     const values = [track.name];
-    try{
+    try {
         validateTrackName(track.name); // throws if name too long/short
         connection.query(query, values, (error, results) => {
-            if (error) throw error;
-            res.status(201).json(results);
+            if (error) next(error);
+            else res.status(201).json(results);
         });
-    }catch(err){
+    } catch (err) {
         next(err); // forward error to error handler middleware
     }
 }
@@ -55,8 +60,8 @@ export function updateTracksByID(req, res, next) {
     try{
         validateTrackName(track.name); // throws if name too long/short
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
-            res.json(results);
+            if (error) next(error);
+            else res.json(results);
         });
     }catch(err){
         next(err); // forward error to error handler middleware
@@ -70,7 +75,7 @@ export function deleteTrackByID(req, res, next) {
     const values = [id];
     try{
         connection.query(query, values, (error, results, _fields) => {
-            if (error) throw error;
+            if (error) next(error);
             res.json(results);
         });
     }catch(err){

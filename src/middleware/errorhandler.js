@@ -11,10 +11,10 @@ export function errorHandler(err, req, res, _next){
 	const status = err.statusCode || 500;
 	const message = err.message ||"Something went wrong";
 	const name = err.name || "";
-	res.status(status).json(JSON.stringify({
+	res.status(status).json({
 		success: false,
 		name: name,
 		status: status,
 		message: message
-	}));
+	});
 }
