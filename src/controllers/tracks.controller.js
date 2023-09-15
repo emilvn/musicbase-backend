@@ -1,4 +1,4 @@
-import { connection } from "../../database.js";
+import {connection} from "../../config/database.js";
 
 //Handle getting all the tracks
 export function getAllTracks(req, res) {
