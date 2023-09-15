@@ -4,7 +4,7 @@ import {throwIfTrackNotFound, validateTrackName} from "../validation/tracks.vali
 //Handle getting all the tracks
 export function getAllTracks(req, res, next) {
     try{
-        const query = "SELECT * FROM tracks;";
+        const query = "CALL GetTracksWithArtistsAndAlbums();";
         connection.query(query, (error, results, _fields) => {
             if (error) next(error);
             res.json(results);

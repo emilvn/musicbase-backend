@@ -2,11 +2,11 @@ import {connection} from "../../config/database.js";
 import {throwIfArtistNotFound, validateArtist} from "../validation/artists.validation.js";
 
 export function getAllArtists(req, res, next) {
-    const query = "SELECT * FROM artists;";
+    const query = "CALL GetArtistsWithAlbumsAndTracks();";
     try{
         connection.query(query, (error, results, _fields) => {
             if (error) next(error);
-            else res.json(results);
+            else res.json(results[0]);
         });
     }catch(err){
         next(err);// forward error to error handler middleware
