@@ -407,6 +407,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-database.js
 # End of https://www.toptal.com/developers/gitignore/api/intellij,visualstudiocode,node,windows,macos,webstorm
-
