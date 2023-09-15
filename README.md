@@ -3,10 +3,9 @@
 ## Installation
     git clone https://www.github.com/emilvn/musicbase-backend.git
     cd musicbase-backend/
-    npm install express cors morgan mysql2 dotenv
-    npm install -g nodemon
+    npm install
 
-Create a .env file at the root of project, and define these values
+Create an .env file at the root of project, and define these values
 
     MYSQL_USER=root
     MYSQL_PASSWORD=database-password
