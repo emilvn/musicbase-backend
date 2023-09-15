@@ -27,7 +27,7 @@ function validateArtistName(name){
 		throw new ValidationError("Artist name too short");
 	}
 }
-function validateURL(url){
+export function validateURL(url){
 	if(typeof url !== "string"){
 		throw new TypeError();
 	}

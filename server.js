@@ -5,6 +5,7 @@ import { tracksRouter } from "./src/routers/tracks.router.js";
 import { artistsRouter } from "./src/routers/artists.router.js";
 import {errorHandler} from "./src/middleware/errorhandler.js";
 import { searchRouter } from "./src/routers/search.router.js";
+import {albumsRouter} from "./src/routers/albums.router.js";
 
 const app = express();
 const port = 3000;
@@ -15,11 +16,13 @@ app.use(cors());
 
 app.use(morgan("tiny"));
 
+app.use("/albums/", albumsRouter);
+
 app.use("/tracks/", tracksRouter);
 
 app.use("/artists/", artistsRouter);
 
-app.use("/search/", searchRouter)
+app.use("/search/", searchRouter);
 
 //app.use("/albums/", albumsRouter);
 app.use(errorHandler);
