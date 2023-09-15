@@ -1,4 +1,3 @@
-import { json } from "express";
 import { connection } from "../../config/database.js";
 
 export function getAllSearchReq(req, res){
