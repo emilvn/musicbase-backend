@@ -1,13 +1,16 @@
 import { connection } from "../../config/database.js";
+import {validateSearchQuery} from "../validation/search.validation.js";
 
-export function getAllSearchReq(req, res){
-  const query = "call search(?);"
-  const value = req.query.q
-  connection.query(query, [value], (error, resulst, fields) => { 
-    if(error){
-      console.log(error);
-    } else {
-      res.json(resulst)
-    }
-  })
+export function getAllSearchReq(req, res, next){
+	const query = "call search(?);"
+	const value = req.query.q
+	try{
+  		validateSearchQuery(value);
+  		connection.query(query, [value], (error, results, _fields) => {
+		if(error) next(error);
+		else res.json(results);
+	  	});
+	}catch(err){
+		next(err);
+	}
 }
