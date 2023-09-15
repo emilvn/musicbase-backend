@@ -7,8 +7,8 @@ export function getAllSearchReq(req, res, next){
 	try{
   		validateSearchQuery(value);
   		connection.query(query, [value], (error, results, _fields) => {
-		if(error) next(error);
-		else res.json(results[0]);
+			if(error) next(error);
+			else res.json(results[0]);
 	  	});
 	}catch(err){
 		next(err);
