@@ -5,7 +5,7 @@ import {HTTPException} from "../errors/HTTPException.js";
 /**
  * validation to make sure album requested exists
  * @param {Album[]}results first index of results from query on database
- * @throws {ValidationError} 404 if no album was found
+ * @throws {HTTPException} 404 if no album was found
  */
 export function throwIfAlbumNotFound(results){
 	if(results.length === 0){
@@ -32,6 +32,8 @@ export function validateAlbum(album){
 /**
  * validate album name
  * @param {string} name name of album
+ * @throws {TypeError} if name not a string
+ * @throws {ValidationError} if name too long/too short
  */
 function validateAlbumName(name){
 	if(typeof name !== "string"){
