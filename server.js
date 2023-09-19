@@ -11,21 +11,27 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-
 app.use(cors());
 
+// morgan for logging requests in server console
 app.use(morgan("tiny"));
 
+// albums router
 app.use("/albums/", albumsRouter);
 
+// tracks router
 app.use("/tracks/", tracksRouter);
 
+// artists router
 app.use("/artists/", artistsRouter);
 
+// search router
 app.use("/search/", searchRouter);
 
-//app.use("/albums/", albumsRouter);
+// error handler middleware, use next(error) to pass error to errorhandler
 app.use(errorHandler);
+
+// start server
 app.listen(port,() => {
 	console.log(`Server is running at http://localhost:${port}`);
 });
