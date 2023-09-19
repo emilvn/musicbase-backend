@@ -35,7 +35,7 @@ export function getSpecificAlbum(req, res, next) {
     const values = [Number(id)];
     connection.query(query, values, (error, results, _fields) => {
         try{
-            throwIfAlbumNotFound(results);
+            throwIfAlbumNotFound(results[0]);
         }catch(err){
             next(err);
         }

@@ -35,7 +35,7 @@ export function getArtistById(req, res, next) {
     try{
         connection.query(query, values, (error, results, _fields) => {
             try{
-                throwIfArtistNotFound(results)
+                throwIfArtistNotFound(results[0])
             }catch(err){
                 next(err);
             }
