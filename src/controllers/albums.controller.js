@@ -17,8 +17,8 @@ export function getAllAlbums(req, res, next) {
 //Handle getting a specific track 
 export function getSpecificAlbum(req, res, next) {
     const id = req.params.id;
-    const query = "SELECT * FROM CALL getAlbums();";
-    const values = [id];
+    const query = "CALL getSpecificAlbum(?)";
+    const values = [Number(id)];
     connection.query(query, values, (error, results, _fields) => {
         try{
             throwIfAlbumNotFound(results);
