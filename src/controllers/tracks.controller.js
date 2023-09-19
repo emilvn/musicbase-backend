@@ -4,10 +4,10 @@ import {throwIfTrackNotFound, validateTrackName} from "../validation/tracks.vali
 //Handle getting all the tracks
 export function getAllTracks(req, res, next) {
     try{
-        const query = "SELECT * FROM tracks;";
+        const query = "CALL getTracks();";
         connection.query(query, (error, results, _fields) => {
             if (error) next(error);
-            res.json(results);
+            res.json(results[0]);
         });
     }catch(err){
         next(err); // forward error to error handler middleware

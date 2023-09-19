@@ -3,11 +3,11 @@ import {throwIfAlbumNotFound, validateAlbum} from "../validation/albums.validati
 
 //Handle getting all the tracks
 export function getAllAlbums(req, res, next) {
-    const query = "SELECT * FROM albums;";
+    const query = "CALL getAlbums();";
     try{
         connection.query(query, (error, results, _fields) => {
             if (error) next(error);
-            else res.json(results);
+            else res.json(results[0]);
         });
     }catch(err){
         next(err);
