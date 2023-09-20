@@ -45,21 +45,37 @@ export function getSpecificAlbum(req, res, next) {
     });
 }
 
-//handle adding a track to the database
-// export function addAlbum(req, res, next) {
-//     const album = req.body;
-//     const query = "INSERT INTO albums(name) VALUES(?);";
-//     const values = [album.name];
-//     try{
-//         validateAlbum(album);
-//         connection.query(query, values, (error, results, _fields) => {
-//             if (error) next(error);
-//             else res.json(results);
-//         });
-//     }catch(err){
-//         next(err);
-//     }
-// }
+/**
+ * adds album data including tracks to the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
+export async function createAlbum(req, res, next){
+    const albumData = prepareAlbumData(req.body);
+    try{
+        const artistPromise = new Promise((resolve, reject) => {
+            connection.query("call insertArtist(?, ?)", [albumData.artist.name, albumData.artist.image], (error, results) => {
+                if (error) reject(error);
+                else resolve(results[0]);
+            });
+        });
+        const artistId = (await artistPromise)[0].id;
+        const albumPromise = new Promise((resolve, reject) => {
+            connection.query("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId], (error, results) => {
+                if (error) reject(error);
+                else resolve(results[0]);
+            });
+        });
+        const albumId = (await albumPromise)[0].id;
+        connection.query("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId], (error, results) => {
+            if (error) next(error);
+            else res.json(results);
+        });
+    } catch (err) {
+        next(err);
+    }
+}
 
 /**
  * updates album data for a specific album on the database
@@ -99,32 +115,6 @@ export function deleteAlbumByID(req, res, next) {
             else res.json(results);
         });
     }catch(err){
-        next(err);
-    }
-}
-
-export async function createAlbum(req, res, next){
-    const albumData = prepareAlbumData(req.body);
-    try{
-        const artistPromise = new Promise((resolve, reject) => {
-            connection.query("call insertArtist(?, ?)", [albumData.artist.name, albumData.artist.image], (error, results) => {
-                if (error) reject(error);
-                else resolve(results[0]);
-            });
-        });
-        const artistId = (await artistPromise)[0].id;
-        const albumPromise = new Promise((resolve, reject) => {
-            connection.query("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId], (error, results) => {
-                if (error) reject(error);
-                else resolve(results[0]);
-            });
-        });
-        const albumId = (await albumPromise)[0].id;
-        connection.query("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId], (error, results) => {
-            if (error) next(error);
-            else res.json(results);
-        });
-    } catch (err) {
         next(err);
     }
 }
