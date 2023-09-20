@@ -89,16 +89,14 @@ export async function createAlbum(req, res, next){
             });
         });
         const artistId = (await artistPromise)[0].id;
-        console.log(artistId)
         const albumPromise = new Promise((resolve, reject) => {
             connection.query("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId], (error, results) => {
                 if (error) reject(error);
                 else resolve(results[0]);
             });
         });
-
-        const albumId = (await albumPromise)[0];
-        connection.query("call insertTracks(?, ?)", [[albumData.tracks], albumId], (error, results) => {
+        const albumId = (await albumPromise)[0].id;
+        connection.query("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId], (error, results) => {
             if (error) next(error);
             else res.json(results);
         });
