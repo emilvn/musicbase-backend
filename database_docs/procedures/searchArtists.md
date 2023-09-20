@@ -1,9 +1,9 @@
-# `searchArtists` MySQL Procedure
+## `searchArtists` MySQL Procedure
 
-## Description:
+### Description:
 The `searchArtists` MySQL procedure is used to search for artists in the database based on a provided search string. It retrieves artist data, including `id`, `name`, and `image`, for artists whose names contain the search string.
 
-## Procedure:
+### Procedure:
 ```sql
 DELIMITER //
 CREATE PROCEDURE searchArtists(IN searchstring VARCHAR(255))
@@ -20,19 +20,19 @@ END;
 DELIMITER ;
 ```
 
-## Usage:
+### Usage:
 To use the `searchArtists` procedure, call it as follows:
 ```sql
 CALL searchArtists('your_search_string');
 ```
 This will retrieve artists whose names match the provided search string.
 
-## Parameters:
+### Parameters:
 The `searchArtists` procedure takes one parameter:
 
 - `searchstring` (IN): The search string to filter artists by.
 
-## Returns:
+### Returns:
 The procedure returns a result set containing the following columns:
 
 - `id`: The unique identifier of the artist.

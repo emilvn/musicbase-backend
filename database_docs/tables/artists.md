@@ -7,7 +7,7 @@ The artists table stores information about artists, including their unique ident
 ```sql
 CREATE TABLE artists (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-    name NVARCHAR(255) UNIQUE,
+    name NVARCHAR(255) UNIQUE NOT NULL,
     image TEXT
 );
 ```

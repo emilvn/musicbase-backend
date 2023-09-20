@@ -1,9 +1,9 @@
-# `searchTracks` MySQL Procedure
+## `searchTracks` MySQL Procedure
 
-## Description:
+### Description:
 The `searchTracks` MySQL procedure is used to search for tracks in the database based on a provided search string. It retrieves track data, including `id`, `name`, and `album_id`, for tracks whose names contain the search string.
 
-## Procedure:
+### Procedure:
 ```sql
 DELIMITER //
 CREATE PROCEDURE searchTracks(IN searchstring VARCHAR(255))
@@ -21,19 +21,19 @@ BEGIN
 END;
 DELIMITER ;
 ```
-## Usage:
+### Usage:
 To use the `searchTracks` procedure, call it as follows:
 ```sql
 CALL searchTracks('your_search_string');
 ```
 This will retrieve tracks whose names match the provided search string.
 
-## Parameters:
+### Parameters:
 The `searchTracks` procedure takes one parameter:
 
 - `searchstring` (IN): The search string to filter tracks by.
 
-## Returns:
+### Returns:
 The procedure returns a result set containing the following columns:
 
 - `id`: The unique identifier of the track.
