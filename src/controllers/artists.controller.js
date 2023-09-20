@@ -56,7 +56,8 @@ export function getArtistById(req, res, next) {
  */
 export function createArtist(req, res, next) {
     const artist = req.body;
-    const query = "INSERT INTO artists(name, image) VALUES(?,?);";
+    // insertArtist procedure, see /database_docs/procedures/insertArtist.md
+    const query = "CALL insertArtist(?,?)";
     const values = [artist.name, artist.image];
     try{
         validateArtist(artist); // throws if artist details are invalid
