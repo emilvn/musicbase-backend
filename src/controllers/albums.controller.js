@@ -1,9 +1,17 @@
 import {connection} from "../../config/database.js";
 import {throwIfAlbumNotFound, validateAlbum} from "../validation/albums.validation.js";
 import { prepareAlbumData } from "./helpers/prepareAlbumData.js";
+// noinspection ES6UnusedImports
+import express from "express";
 
-//Handle getting all the tracks
+/**
+ * gets album data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function getAllAlbums(req, res, next) {
+    // getAlbums procedure, see /database_docs/procedures/getAlbums.md
     const query = "CALL getAlbums();";
     try{
         connection.query(query, (error, results, _fields) => {
@@ -15,14 +23,20 @@ export function getAllAlbums(req, res, next) {
     }
 }
 
-//Handle getting a specific track 
+/**
+ * gets data of specific album from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function getSpecificAlbum(req, res, next) {
     const id = req.params.id;
-    const query = "SELECT * FROM albums WHERE id = ?;";
-    const values = [id];
+    // getSpecificAlbum procedure, see /database_docs/procedures/getSpecificAlbum.md
+    const query = "CALL getSpecificAlbum(?)";
+    const values = [Number(id)];
     connection.query(query, values, (error, results, _fields) => {
         try{
-            throwIfAlbumNotFound(results);
+            throwIfAlbumNotFound(results[0]);
         }catch(err){
             next(err);
         }
@@ -47,7 +61,12 @@ export function getSpecificAlbum(req, res, next) {
 //     }
 // }
 
-//handle updating a specifik track using ID
+/**
+ * updates album data for a specific album on the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function updateAlbumByID(req, res, next) {
     const id = req.params.id;
     const album = req.body;
@@ -64,7 +83,12 @@ export function updateAlbumByID(req, res, next) {
     }
 }
 
-//handle deleting a specific track using ID
+/**
+ * deletes album data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function deleteAlbumByID(req, res, next) {
     const id = req.params.id;
     const query = "DELETE FROM albums WHERE id =?;";

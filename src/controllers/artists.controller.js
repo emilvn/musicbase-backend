@@ -1,7 +1,16 @@
 import {connection} from "../../config/database.js";
 import {throwIfArtistNotFound, validateArtist} from "../validation/artists.validation.js";
+// noinspection ES6UnusedImports
+import express from "express";
 
+/**
+ * gets artist data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function getAllArtists(req, res, next) {
+    // getArtists procedure, see /database_docs/procedures/getArtists.md
     const query = "CALL getArtists();";
     try{
         connection.query(query, (error, results, _fields) => {
@@ -13,6 +22,12 @@ export function getAllArtists(req, res, next) {
     }
 }
 
+/**
+ * gets specific artist data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function getArtistById(req, res, next) {
     const id = req.params.id;
     const query = "SELECT * FROM artists WHERE id = ?;";
@@ -20,7 +35,7 @@ export function getArtistById(req, res, next) {
     try{
         connection.query(query, values, (error, results, _fields) => {
             try{
-                throwIfArtistNotFound(results)
+                throwIfArtistNotFound(results[0])
             }catch(err){
                 next(err);
             }
@@ -33,6 +48,12 @@ export function getArtistById(req, res, next) {
 
 }
 
+/**
+ * adds new artist data to the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function createArtist(req, res, next) {
     const artist = req.body;
     const query = "INSERT INTO artists(name, image) VALUES(?,?);";
@@ -48,6 +69,12 @@ export function createArtist(req, res, next) {
     }
 }
 
+/**
+ * updates artist data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function updateArtistById(req, res, next) {
     const id = req.params.id;
     const artist = req.body;
@@ -64,6 +91,12 @@ export function updateArtistById(req, res, next) {
     }
 }
 
+/**
+ * deletes artist data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ */
 export function deleteArtistById(req, res, next) {
     const id = req.params.id;
     const query = "DELETE FROM artists WHERE id =?;";

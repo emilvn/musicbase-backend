@@ -3,15 +3,12 @@ import express from "express"
 
 export const artistsRouter = express.Router();
 
-artistsRouter.get("/", getAllArtists)
-
-artistsRouter.get("/:id", getArtistById)
-
-artistsRouter.post("/", createArtist)
-
-artistsRouter.put("/:id", updateArtistById)
-
-artistsRouter.delete("/:id", deleteArtistById)
+// artists routes
+artistsRouter.get("/", getAllArtists);
+artistsRouter.get("/:id", getArtistById);
+artistsRouter.post("/", createArtist);
+artistsRouter.put("/:id", updateArtistById);
+artistsRouter.delete("/:id", deleteArtistById);
 
 
 
