@@ -1,7 +1,6 @@
 import { 
   getAllTracks, 
-  getSpecificTrack, 
-  addTrack, 
+  getSpecificTrack,
   updateTracksByID, 
   deleteTrackByID 
 } from "../controllers/tracks.controller.js";
