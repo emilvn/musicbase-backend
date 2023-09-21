@@ -16,6 +16,11 @@ app.use(cors());
 // morgan for logging requests in server console
 app.use(morgan("tiny"));
 
+//welcome route
+app.get("/", (req, res) => {
+	res.send("Hej, det virker");
+})
+
 // albums router
 app.use("/albums/", albumsRouter);
 
