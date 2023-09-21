@@ -1,6 +1,7 @@
-import mysql from "mysql2";
+import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 import fs from "fs";
+dotenv.config();
 
 const dbconfig = {
 	host: process.env.MYSQL_HOST,
@@ -11,7 +12,6 @@ const dbconfig = {
 }
 if (process.env.MYSQL_CERT) {
 	dbconfig.ssl = {cs: fs.readFileSync("DigiCertGlobalRootCA.crt.pem")};
-};
+}
 
-dotenv.config();
-export const connection = mysql.createConnection(dbconfig);
+export const connection = await mysql.createConnection(dbconfig);

@@ -10,14 +10,12 @@ import express from "express";
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function getAllAlbums(req, res, next) {
+export async function getAllAlbums(req, res, next) {
     // getAlbums procedure, see /database_docs/procedures/getAlbums.md
     const query = "CALL getAlbums();";
     try{
-        connection.query(query, (error, results, _fields) => {
-            if (error) next(error);
-            else res.json(results[0]);
-        });
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
     }catch(err){
         next(err);
     }
@@ -29,20 +27,19 @@ export function getAllAlbums(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function getSpecificAlbum(req, res, next) {
+export async function getSpecificAlbum(req, res, next) {
     const id = req.params.id;
     // getSpecificAlbum procedure, see /database_docs/procedures/getSpecificAlbum.md
     const query = "CALL getSpecificAlbum(?)";
     const values = [Number(id)];
-    connection.query(query, values, (error, results, _fields) => {
-        try{
-            throwIfAlbumNotFound(results[0]);
-        }catch(err){
-            next(err);
-        }
-        if (error) next(error);
-        else res.json(results[0]);
-    });
+    try{
+        const [result] = await connection.execute(query, values);
+        throwIfAlbumNotFound(result[0]);
+        res.json(result[0]);
+    }
+    catch(err){
+        next(err);
+    }
 }
 
 /**
@@ -54,27 +51,12 @@ export function getSpecificAlbum(req, res, next) {
 export async function createAlbum(req, res, next){
     const albumData = prepareAlbumData(req.body);
     try{
-        const artistPromise = new Promise((resolve, reject) => {
-            // insertArtist procedure, see /database_docs/procedures/insertArtist.md
-            connection.query("call insertArtist(?, ?)", [albumData.artist.name, albumData.artist.image], (error, results) => {
-                if (error) reject(error);
-                else resolve(results[0]);
-            });
-        });
-        const artistId = (await artistPromise)[0].id;
-        const albumPromise = new Promise((resolve, reject) => {
-            // insertAlbum procedure, see /database_docs/procedures/insertAlbum.md
-            connection.query("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId], (error, results) => {
-                if (error) reject(error);
-                else resolve(results[0]);
-            });
-        });
-        const albumId = (await albumPromise)[0].id;
-        // insertTracks procedure, see /database_docs/procedures/insertTracks.md
-        connection.query("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId], (error, results) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [artistResult] = await connection.execute("call insertArtist(?, ?)", [albumData.artist.name, albumData.artist.image]);
+        const artistId = artistResult[0][0].id;
+        const [albumResult] = await connection.execute("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId]);
+        const albumId = albumResult[0][0].id;
+        const [result] = await connection.execute("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId]);
+        res.json(result[0]);
     } catch (err) {
         next(err);
     }
@@ -86,17 +68,15 @@ export async function createAlbum(req, res, next){
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function updateAlbumByID(req, res, next) {
+export async function updateAlbumByID(req, res, next) {
     const id = req.params.id;
     const album = req.body;
     const query = "UPDATE albums SET name = ? WHERE id = ?;";
     const values = [album.name, id];
     try{
         validateAlbum(album);
-        connection.query(query, values, (error, results) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
     }catch(err){
         next(err);
     }
@@ -108,15 +88,13 @@ export function updateAlbumByID(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function deleteAlbumByID(req, res, next) {
+export async function deleteAlbumByID(req, res, next) {
     const id = req.params.id;
     const query = "DELETE FROM albums WHERE id =?;";
     const values = [id];
     try{
-        connection.query(query, values, (error, results) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
     }catch(err){
         next(err);
     }

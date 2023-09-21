@@ -9,16 +9,14 @@ import express from "express";
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function searchArtists(req, res, next){
+export async function searchArtists(req, res, next){
 	// searchArtists procedure, see /database_docs/procedures/searchArtists.md
 	const query = "CALL searchArtists(?);"
 	const value = req.query.q
 	try{
-  		validateSearchQuery(value);
-  		connection.query(query, [value], (error, results, _fields) => {
-			if(error) next(error);
-			else res.json(results[0]);
-	  	});
+		validateSearchQuery(value);
+		const [result] = await connection.execute(query, [value]);
+		res.json(result[0]);
 	}catch(err){
 		next(err);
 	}
@@ -30,16 +28,14 @@ export function searchArtists(req, res, next){
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function searchAlbums(req, res, next){
+export async function searchAlbums(req, res, next){
 	// searchAlbums procedure, see /database_docs/procedures/searchAlbums.md
 	const query = "CALL searchAlbums(?);"
 	const value = req.query.q
 	try{
-  		validateSearchQuery(value);
-  		connection.query(query, [value], (error, results, _fields) => {
-			if(error) next(error);
-			else res.json(results[0]);
-	  	});
+		validateSearchQuery(value);
+		const [result] = await connection.execute(query, [value]);
+		res.json(result[0]);
 	}catch(err){
 		next(err);
 	}
@@ -51,16 +47,14 @@ export function searchAlbums(req, res, next){
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function searchTracks(req, res, next){
+export async function searchTracks(req, res, next){
 	// searchTracks procedure, see /database_docs/procedures/searchTracks.md
 	const query = "CALL searchTracks(?);"
 	const value = req.query.q
 	try{
-  		validateSearchQuery(value);
-  		connection.query(query, [value], (error, results, _fields) => {
-			if(error) next(error);
-			else res.json(results[0]);
-	  	});
+		validateSearchQuery(value);
+		const [result] = await connection.execute(query, [value]);
+		res.json(result[0]);
 	}catch(err){
 		next(err);
 	}

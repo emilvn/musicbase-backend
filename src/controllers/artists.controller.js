@@ -9,14 +9,12 @@ import express from "express";
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function getAllArtists(req, res, next) {
+export async function getAllArtists(req, res, next) {
     // getArtists procedure, see /database_docs/procedures/getArtists.md
     const query = "CALL getArtists();";
     try{
-        connection.query(query, (error, results, _fields) => {
-            if (error) next(error);
-            else res.json(results[0]);
-        });
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
     }catch(err){
         next(err);// forward error to error handler middleware
     }
@@ -28,20 +26,14 @@ export function getAllArtists(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function getArtistById(req, res, next) {
+export async function getArtistById(req, res, next) {
     const id = req.params.id;
     const query = "SELECT * FROM artists WHERE id = ?;";
     const values = [id];
     try{
-        connection.query(query, values, (error, results, _fields) => {
-            try{
-                throwIfArtistNotFound(results[0])
-            }catch(err){
-                next(err);
-            }
-            if (error) next(error);
-            else res.json(results[0]);
-        });
+        const [result] = await connection.execute(query, values);
+        throwIfArtistNotFound(result[0]);
+        res.json(result[0]);
     }catch(err){
         next(err);// forward error to error handler middleware
     }
@@ -54,17 +46,15 @@ export function getArtistById(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function createArtist(req, res, next) {
+export async function createArtist(req, res, next) {
     const artist = req.body;
     // insertArtist procedure, see /database_docs/procedures/insertArtist.md
     const query = "CALL insertArtist(?,?)";
     const values = [artist.name, artist.image];
     try{
         validateArtist(artist); // throws if artist details are invalid
-        connection.query(query, values, (error, results, _fields) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
     }catch(err){
         next(err);// forward error to error handler middleware
     }
@@ -76,17 +66,15 @@ export function createArtist(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function updateArtistById(req, res, next) {
+export async function updateArtistById(req, res, next) {
     const id = req.params.id;
     const artist = req.body;
     const query = "UPDATE artists SET name = ?, image =? WHERE id = ? ";
     const values = [artist.name, artist.image, id];
     try{
         validateArtist(artist); // throws if artist details are invalid
-        connection.query(query, values, (error, results, _fields) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
     }catch(err){
         next(err);// forward error to error handler middleware
     }
@@ -98,15 +86,13 @@ export function updateArtistById(req, res, next) {
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
  */
-export function deleteArtistById(req, res, next) {
+export async function deleteArtistById(req, res, next) {
     const id = req.params.id;
     const query = "DELETE FROM artists WHERE id =?;";
     const values = [id];
     try{
-        connection.query(query, values, (error, results) => {
-            if (error) next(error);
-            else res.json(results);
-        });
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
     }catch(err){
         next(err);// forward error to error handler middleware
     }
