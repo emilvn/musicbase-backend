@@ -22,16 +22,16 @@ app.get("/", (req, res) => {
 })
 
 // albums router
-app.use("/albums/", albumsRouter);
+app.use("/albums", albumsRouter);
 
 // tracks router
-app.use("/tracks/", tracksRouter);
+app.use("/tracks", tracksRouter);
 
 // artists router
-app.use("/artists/", artistsRouter);
+app.use("/artists", artistsRouter);
 
 // search router
-app.use("/search/", searchRouter);
+app.use("/search", searchRouter);
 
 // error handler middleware, use next(error) to pass error to errorhandler
 app.use(errorHandler);
