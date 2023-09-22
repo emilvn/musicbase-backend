@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/controllers/albums.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/controllers/albums.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {connection} from "../../config/database.js";
+import {throwIfAlbumNotFound, validateAlbum} from "../validation/albums.validation.js";
+import { prepareAlbumData } from "./helpers/prepareAlbumData.js";
+// noinspection ES6UnusedImports
+import express from "express";
+
+/**
+ * gets complete album data, including complete data for all artists and tracks relating to the album
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function getAllAlbumsComplete(req, res, next){
+    const query = "CALL GetAlbumsWithArtistsAndTracks();";
+    try{
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * gets album data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function getAllAlbums(req, res, next) {
+    // getAlbums procedure, see /database_docs/procedures/getAlbums.md
+    const query = "CALL getAlbums();";
+    try{
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * gets data of specific album from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function getSpecificAlbum(req, res, next) {
+    const id = req.params.id;
+    // getSpecificAlbum procedure, see /database_docs/procedures/getSpecificAlbum.md
+    const query = "CALL getSpecificAlbum(?)";
+    const values = [Number(id)];
+    try{
+        const [result] = await connection.execute(query, values);
+        throwIfAlbumNotFound(result[0]);
+        res.json(result[0]);
+    }
+    catch(err){
+        next(err);
+    }
+}
+
+/**
+ * adds album data including tracks to the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function createAlbum(req, res, next){
+    const albumData = prepareAlbumData(req.body);
+    try{
+        const [artistResult] = await connection.execute("call insertArtist(?, ?)", [albumData.artist.name, albumData.artist.image]);
+        const artistId = artistResult[0][0].id;
+        const [albumResult] = await connection.execute("call insertAlbum(?, ?, ?)", [albumData.album.name, albumData.album.image, artistId]);
+        const albumId = albumResult[0][0].id;
+        const [result] = await connection.execute("call insertTracks(?, ?)", [JSON.stringify(albumData.tracks), albumId]);
+        res.json(result[0]);
+    } catch (err) {
+        next(err);
+    }
+}
+
+/**
+ * updates album data for a specific album on the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function updateAlbumByID(req, res, next) {
+    const id = req.params.id;
+    const album = req.body;
+    const query = "UPDATE albums SET name = ? WHERE id = ?;";
+    const values = [album.name, id];
+    try{
+        validateAlbum(album);
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * deletes album data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function deleteAlbumByID(req, res, next) {
+    const id = req.params.id;
+    const query = "DELETE FROM albums WHERE id =?;";
+    const values = [id];
+    try{
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="HTTPException.html">HTTPException</a></li><li><a href="ValidationError.html">ValidationError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createAlbum">createAlbum</a></li><li><a href="global.html#createArtist">createArtist</a></li><li><a href="global.html#deleteAlbumByID">deleteAlbumByID</a></li><li><a href="global.html#deleteArtistById">deleteArtistById</a></li><li><a href="global.html#deleteTrackByID">deleteTrackByID</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#getAllAlbums">getAllAlbums</a></li><li><a href="global.html#getAllAlbumsComplete">getAllAlbumsComplete</a></li><li><a href="global.html#getAllArtists">getAllArtists</a></li><li><a href="global.html#getAllTracks">getAllTracks</a></li><li><a href="global.html#getArtistById">getArtistById</a></li><li><a href="global.html#getSpecificAlbum">getSpecificAlbum</a></li><li><a href="global.html#getSpecificTrack">getSpecificTrack</a></li><li><a href="global.html#prepareAlbumData">prepareAlbumData</a></li><li><a href="global.html#searchAlbums">searchAlbums</a></li><li><a href="global.html#searchArtists">searchArtists</a></li><li><a href="global.html#searchTracks">searchTracks</a></li><li><a href="global.html#throwIfAlbumNotFound">throwIfAlbumNotFound</a></li><li><a href="global.html#throwIfArtistNotFound">throwIfArtistNotFound</a></li><li><a href="global.html#throwIfTrackNotFound">throwIfTrackNotFound</a></li><li><a href="global.html#updateAlbumByID">updateAlbumByID</a></li><li><a href="global.html#updateArtistById">updateArtistById</a></li><li><a href="global.html#updateTracksByID">updateTracksByID</a></li><li><a href="global.html#validateAlbum">validateAlbum</a></li><li><a href="global.html#validateAlbumArtist">validateAlbumArtist</a></li><li><a href="global.html#validateAlbumName">validateAlbumName</a></li><li><a href="global.html#validateAlbumTracks">validateAlbumTracks</a></li><li><a href="global.html#validateArtist">validateArtist</a></li><li><a href="global.html#validateArtistName">validateArtistName</a></li><li><a href="global.html#validateSearchQuery">validateSearchQuery</a></li><li><a href="global.html#validateTrackName">validateTrackName</a></li><li><a href="global.html#validateURL">validateURL</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Sep 22 2023 14:00:07 GMT+0200 (Centraleuropæisk sommertid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

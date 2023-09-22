@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/controllers/artists.controller.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/controllers/artists.controller.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {connection} from "../../config/database.js";
+import {throwIfArtistNotFound, validateArtist} from "../validation/artists.validation.js";
+// noinspection ES6UnusedImports
+import express from "express";
+
+/**
+ * gets artist data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function getAllArtists(req, res, next) {
+    // getArtists procedure, see /database_docs/procedures/getArtists.md
+    const query = "CALL getArtists();";
+    try{
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * gets specific artist data from the database and responds with it
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function getArtistById(req, res, next) {
+    const id = req.params.id;
+    const query = "SELECT * FROM artists WHERE id = ?;";
+    const values = [id];
+    try{
+        const [result] = await connection.execute(query, values);
+        throwIfArtistNotFound(result[0]);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+
+}
+
+/**
+ * adds new artist data to the database
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function createArtist(req, res, next) {
+    const artist = req.body;
+    // insertArtist procedure, see /database_docs/procedures/insertArtist.md
+    const query = "CALL insertArtist(?,?)";
+    const values = [artist.name, artist.image];
+    try{
+        validateArtist(artist);
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * updates artist data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function updateArtistById(req, res, next) {
+    const id = req.params.id;
+    const artist = req.body;
+    const query = "UPDATE artists SET name = ?, image =? WHERE id = ? ";
+    const values = [artist.name, artist.image, id];
+    try{
+        validateArtist(artist);
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
+ * deletes artist data on the database by id
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise&lt;void>}
+ */
+export async function deleteArtistById(req, res, next) {
+    const id = req.params.id;
+    const query = "DELETE FROM artists WHERE id =?;";
+    const values = [id];
+    try{
+        const [result] = await connection.execute(query, values);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="HTTPException.html">HTTPException</a></li><li><a href="ValidationError.html">ValidationError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createAlbum">createAlbum</a></li><li><a href="global.html#createArtist">createArtist</a></li><li><a href="global.html#deleteAlbumByID">deleteAlbumByID</a></li><li><a href="global.html#deleteArtistById">deleteArtistById</a></li><li><a href="global.html#deleteTrackByID">deleteTrackByID</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#getAllAlbums">getAllAlbums</a></li><li><a href="global.html#getAllAlbumsComplete">getAllAlbumsComplete</a></li><li><a href="global.html#getAllArtists">getAllArtists</a></li><li><a href="global.html#getAllTracks">getAllTracks</a></li><li><a href="global.html#getArtistById">getArtistById</a></li><li><a href="global.html#getSpecificAlbum">getSpecificAlbum</a></li><li><a href="global.html#getSpecificTrack">getSpecificTrack</a></li><li><a href="global.html#prepareAlbumData">prepareAlbumData</a></li><li><a href="global.html#searchAlbums">searchAlbums</a></li><li><a href="global.html#searchArtists">searchArtists</a></li><li><a href="global.html#searchTracks">searchTracks</a></li><li><a href="global.html#throwIfAlbumNotFound">throwIfAlbumNotFound</a></li><li><a href="global.html#throwIfArtistNotFound">throwIfArtistNotFound</a></li><li><a href="global.html#throwIfTrackNotFound">throwIfTrackNotFound</a></li><li><a href="global.html#updateAlbumByID">updateAlbumByID</a></li><li><a href="global.html#updateArtistById">updateArtistById</a></li><li><a href="global.html#updateTracksByID">updateTracksByID</a></li><li><a href="global.html#validateAlbum">validateAlbum</a></li><li><a href="global.html#validateAlbumArtist">validateAlbumArtist</a></li><li><a href="global.html#validateAlbumName">validateAlbumName</a></li><li><a href="global.html#validateAlbumTracks">validateAlbumTracks</a></li><li><a href="global.html#validateArtist">validateArtist</a></li><li><a href="global.html#validateArtistName">validateArtistName</a></li><li><a href="global.html#validateSearchQuery">validateSearchQuery</a></li><li><a href="global.html#validateTrackName">validateTrackName</a></li><li><a href="global.html#validateURL">validateURL</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Sep 22 2023 14:00:07 GMT+0200 (Centraleuropæisk sommertid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

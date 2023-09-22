@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/validation/albums.validation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/validation/albums.validation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {ValidationError} from "../errors/ValidationError.js";
+import {validateURL} from "./artists.validation.js";
+import {HTTPException} from "../errors/HTTPException.js";
+
+/**
+ * validation to make sure album requested exists
+ * @param {Album[]}results first index of results from query on database
+ * @throws {HTTPException} 404 if no album was found
+ */
+export function throwIfAlbumNotFound(results){
+	if(results.length === 0){
+		throw new HTTPException("Album not found.", 404);
+	}
+}
+
+/**
+ * function to validate album details
+ * @param {AlbumCreationObject}album album details to be validated
+ * @throws {ValidationError|TypeError} rethrows error from validation functions
+ */
+export function validateAlbum(album){
+	try{
+		validateAlbumName(album.name);
+		validateURL(album.image);
+		validateAlbumArtist(album.artist);
+		validateAlbumTracks(album.tracks);
+	}catch(err){
+		throw err;
+	}
+}
+
+/**
+ * validate album name
+ * @param {string} name name of album
+ * @throws {TypeError} if name not a string
+ * @throws {ValidationError} if name too long/too short
+ */
+function validateAlbumName(name){
+	if(typeof name !== "string"){
+		throw new TypeError();
+	}
+	else if(name.length > 255){
+		throw new ValidationError("Album name too long.");
+	}
+	else if(name.length &lt; 1){
+		throw new ValidationError("Album name too short");
+	}
+}
+
+/**
+ * validates the artist of the album creation object
+ * @param {Artist}artist
+ * @throws {ValidationError} if no artist, or if wrong artist details
+ */
+function validateAlbumArtist(artist){
+	if(!artist){
+		throw new ValidationError("Album must have an artist");
+	}
+	else if(!artist.name || !artist.image){
+		throw new ValidationError("Artist must have a name and an image");
+	}
+}
+
+/**
+ * validates track details of album
+ * @param {Track[]} tracks array of tracks on album
+ * @throws {ValidationError} if there are no tracks or if there are over 20 tracks
+ */
+function validateAlbumTracks(tracks){
+	if(!tracks){
+		throw new ValidationError("Album must have tracks");
+	}
+	else if(tracks.length &lt; 1){
+		throw new ValidationError("Album must have at least one track");
+	}
+	else if(tracks.length > 20){
+		throw new ValidationError("A maximum of 20 tracks can be added with an album at once");
+	}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="HTTPException.html">HTTPException</a></li><li><a href="ValidationError.html">ValidationError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createAlbum">createAlbum</a></li><li><a href="global.html#createArtist">createArtist</a></li><li><a href="global.html#deleteAlbumByID">deleteAlbumByID</a></li><li><a href="global.html#deleteArtistById">deleteArtistById</a></li><li><a href="global.html#deleteTrackByID">deleteTrackByID</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#getAllAlbums">getAllAlbums</a></li><li><a href="global.html#getAllAlbumsComplete">getAllAlbumsComplete</a></li><li><a href="global.html#getAllArtists">getAllArtists</a></li><li><a href="global.html#getAllTracks">getAllTracks</a></li><li><a href="global.html#getArtistById">getArtistById</a></li><li><a href="global.html#getSpecificAlbum">getSpecificAlbum</a></li><li><a href="global.html#getSpecificTrack">getSpecificTrack</a></li><li><a href="global.html#prepareAlbumData">prepareAlbumData</a></li><li><a href="global.html#searchAlbums">searchAlbums</a></li><li><a href="global.html#searchArtists">searchArtists</a></li><li><a href="global.html#searchTracks">searchTracks</a></li><li><a href="global.html#throwIfAlbumNotFound">throwIfAlbumNotFound</a></li><li><a href="global.html#throwIfArtistNotFound">throwIfArtistNotFound</a></li><li><a href="global.html#throwIfTrackNotFound">throwIfTrackNotFound</a></li><li><a href="global.html#updateAlbumByID">updateAlbumByID</a></li><li><a href="global.html#updateArtistById">updateArtistById</a></li><li><a href="global.html#updateTracksByID">updateTracksByID</a></li><li><a href="global.html#validateAlbum">validateAlbum</a></li><li><a href="global.html#validateAlbumArtist">validateAlbumArtist</a></li><li><a href="global.html#validateAlbumName">validateAlbumName</a></li><li><a href="global.html#validateAlbumTracks">validateAlbumTracks</a></li><li><a href="global.html#validateArtist">validateArtist</a></li><li><a href="global.html#validateArtistName">validateArtistName</a></li><li><a href="global.html#validateSearchQuery">validateSearchQuery</a></li><li><a href="global.html#validateTrackName">validateTrackName</a></li><li><a href="global.html#validateURL">validateURL</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Sep 22 2023 14:00:07 GMT+0200 (Centraleuropæisk sommertid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

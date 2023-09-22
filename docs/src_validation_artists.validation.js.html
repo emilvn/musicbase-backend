@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/validation/artists.validation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/validation/artists.validation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {HTTPException} from "../errors/HTTPException.js";
+import {ValidationError} from "../errors/ValidationError.js";
+
+/**
+ * validation to make sure artist requested exists
+ * @param {Album[]}results first index of results from query on database
+ * @throws {HTTPException} 404 if no artist was found
+ */
+export function throwIfArtistNotFound(results){
+	if(results.length === 0){
+		throw new HTTPException("Artist not found.", 404);
+	}
+}
+
+/**
+ * function to validate artist details
+ * @param {Artist}artist artist details to be validated
+ * @throws {ValidationError|TypeError} rethrows error from validation functions
+ */
+export function validateArtist(artist){
+	try{
+		validateArtistName(artist.name);
+		validateURL(artist.image);
+	}catch(err){
+		throw err;
+	}
+}
+
+/**
+ * validate artist name
+ * @param {string} name name of artist
+ * @throws {TypeError} if artist name not a string
+ * @throws {ValidationError} if artist name too long/too short
+ */
+function validateArtistName(name){
+	if(typeof name !== "string"){
+		throw new TypeError();
+	}
+	else if(name.length > 255){
+		throw new ValidationError("Artist name too long.");
+	}
+	else if(name.length &lt; 1){
+		throw new ValidationError("Artist name too short");
+	}
+}
+
+/**
+ * validate URL, must begin with http:// or https://
+ * @param {string} url url to be validated
+ * @throws {TypeError} if url not a string
+ * @throws {ValidationError} if url doesn't start with http:// or https://
+ */
+export function validateURL(url){
+	if(typeof url !== "string"){
+		throw new TypeError();
+	}
+	if(!url.match(/^https?:\/\/[^\s/$.?#].\S*$/i)){
+		throw new ValidationError("Invalid URL must begin with http:// or https://");
+	}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="HTTPException.html">HTTPException</a></li><li><a href="ValidationError.html">ValidationError</a></li></ul><h3>Global</h3><ul><li><a href="global.html#createAlbum">createAlbum</a></li><li><a href="global.html#createArtist">createArtist</a></li><li><a href="global.html#deleteAlbumByID">deleteAlbumByID</a></li><li><a href="global.html#deleteArtistById">deleteArtistById</a></li><li><a href="global.html#deleteTrackByID">deleteTrackByID</a></li><li><a href="global.html#errorHandler">errorHandler</a></li><li><a href="global.html#getAllAlbums">getAllAlbums</a></li><li><a href="global.html#getAllAlbumsComplete">getAllAlbumsComplete</a></li><li><a href="global.html#getAllArtists">getAllArtists</a></li><li><a href="global.html#getAllTracks">getAllTracks</a></li><li><a href="global.html#getArtistById">getArtistById</a></li><li><a href="global.html#getSpecificAlbum">getSpecificAlbum</a></li><li><a href="global.html#getSpecificTrack">getSpecificTrack</a></li><li><a href="global.html#prepareAlbumData">prepareAlbumData</a></li><li><a href="global.html#searchAlbums">searchAlbums</a></li><li><a href="global.html#searchArtists">searchArtists</a></li><li><a href="global.html#searchTracks">searchTracks</a></li><li><a href="global.html#throwIfAlbumNotFound">throwIfAlbumNotFound</a></li><li><a href="global.html#throwIfArtistNotFound">throwIfArtistNotFound</a></li><li><a href="global.html#throwIfTrackNotFound">throwIfTrackNotFound</a></li><li><a href="global.html#updateAlbumByID">updateAlbumByID</a></li><li><a href="global.html#updateArtistById">updateArtistById</a></li><li><a href="global.html#updateTracksByID">updateTracksByID</a></li><li><a href="global.html#validateAlbum">validateAlbum</a></li><li><a href="global.html#validateAlbumArtist">validateAlbumArtist</a></li><li><a href="global.html#validateAlbumName">validateAlbumName</a></li><li><a href="global.html#validateAlbumTracks">validateAlbumTracks</a></li><li><a href="global.html#validateArtist">validateArtist</a></li><li><a href="global.html#validateArtistName">validateArtistName</a></li><li><a href="global.html#validateSearchQuery">validateSearchQuery</a></li><li><a href="global.html#validateTrackName">validateTrackName</a></li><li><a href="global.html#validateURL">validateURL</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri Sep 22 2023 14:00:07 GMT+0200 (Centraleuropæisk sommertid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
