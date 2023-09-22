@@ -12,7 +12,6 @@ import express from "express";
  * @returns {Promise<void>}
  */
 export async function getAllAlbumsComplete(req, res, next){
-    // GetAlbumsWithArtistsAndTracks procedure, see /database_docs/procedures/GetAlbumsWithArtistsAndTracks.md
     const query = "CALL GetAlbumsWithArtistsAndTracks();";
     try{
         const [result] = await connection.execute(query);

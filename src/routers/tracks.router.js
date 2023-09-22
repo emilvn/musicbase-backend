@@ -9,7 +9,6 @@ import express from "express";
 
 export const tracksRouter = express.Router();
 
-// tracks routes
 tracksRouter.get("/", getAllTracks);
 tracksRouter.get("/:id", getSpecificTrack);
 tracksRouter.put("/:id", updateTracksByID);

@@ -8,6 +8,7 @@ import express from "express";
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getAllArtists(req, res, next) {
     // getArtists procedure, see /database_docs/procedures/getArtists.md
@@ -16,7 +17,7 @@ export async function getAllArtists(req, res, next) {
         const [result] = await connection.execute(query);
         res.json(result[0]);
     }catch(err){
-        next(err);// forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -25,6 +26,7 @@ export async function getAllArtists(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getArtistById(req, res, next) {
     const id = req.params.id;
@@ -35,7 +37,7 @@ export async function getArtistById(req, res, next) {
         throwIfArtistNotFound(result[0]);
         res.json(result[0]);
     }catch(err){
-        next(err);// forward error to error handler middleware
+        next(err);
     }
 
 }
@@ -45,6 +47,7 @@ export async function getArtistById(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function createArtist(req, res, next) {
     const artist = req.body;
@@ -52,11 +55,11 @@ export async function createArtist(req, res, next) {
     const query = "CALL insertArtist(?,?)";
     const values = [artist.name, artist.image];
     try{
-        validateArtist(artist); // throws if artist details are invalid
+        validateArtist(artist);
         const [result] = await connection.execute(query, values);
         res.json(result[0]);
     }catch(err){
-        next(err);// forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -65,6 +68,7 @@ export async function createArtist(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function updateArtistById(req, res, next) {
     const id = req.params.id;
@@ -72,11 +76,11 @@ export async function updateArtistById(req, res, next) {
     const query = "UPDATE artists SET name = ?, image =? WHERE id = ? ";
     const values = [artist.name, artist.image, id];
     try{
-        validateArtist(artist); // throws if artist details are invalid
+        validateArtist(artist);
         const [result] = await connection.execute(query, values);
         res.json(result[0]);
     }catch(err){
-        next(err);// forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -85,6 +89,7 @@ export async function updateArtistById(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function deleteArtistById(req, res, next) {
     const id = req.params.id;
@@ -94,6 +99,6 @@ export async function deleteArtistById(req, res, next) {
         const [result] = await connection.execute(query, values);
         res.json(result[0]);
     }catch(err){
-        next(err);// forward error to error handler middleware
+        next(err);
     }
 }

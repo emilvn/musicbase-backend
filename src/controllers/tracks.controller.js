@@ -8,6 +8,7 @@ import express from "express";
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getAllTracks(req, res, next) {
     try{
@@ -16,7 +17,7 @@ export async function getAllTracks(req, res, next) {
         const [result] = await connection.execute(query);
         res.json(result[0]);
     }catch(err){
-        next(err); // forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -25,6 +26,7 @@ export async function getAllTracks(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getSpecificTrack(req, res, next) {
     const id = req.params.id;
@@ -44,6 +46,7 @@ export async function getSpecificTrack(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function updateTracksByID(req, res, next) {
     const id = req.params.id;
@@ -51,11 +54,11 @@ export async function updateTracksByID(req, res, next) {
     const query = "UPDATE tracks SET name = ? WHERE id = ?;";
     const values = [track.name, id];
     try{
-        validateTrackName(track); // throws if name too long/short
+        validateTrackName(track);
         const [result] = await connection.execute(query, values);
         res.json(result[0]);
     }catch(err){
-        next(err); // forward error to error handler middleware
+        next(err);
     }
 }
 
@@ -64,6 +67,7 @@ export async function updateTracksByID(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function deleteTrackByID(req, res, next) {
     const id = req.params.id;
@@ -73,6 +77,6 @@ export async function deleteTrackByID(req, res, next) {
         const [result] = await connection.execute(query, values);
         res.json(result[0]);
     }catch(err){
-        next(err); // forward error to error handler middleware
+        next(err);
     }
 }

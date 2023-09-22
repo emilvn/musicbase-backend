@@ -16,27 +16,17 @@ app.use(cors());
 // morgan for logging requests in server console
 app.use(morgan("tiny"));
 
-//welcome route
 app.get("/", (req, res) => {
-	res.send("Hej, det virker");
+	res.send("Welcome to the backend of Musicbase!");
 })
 
-// albums router
 app.use("/albums", albumsRouter);
-
-// tracks router
 app.use("/tracks", tracksRouter);
-
-// artists router
 app.use("/artists", artistsRouter);
-
-// search router
 app.use("/search", searchRouter);
 
-// error handler middleware, use next(error) to pass error to errorhandler
 app.use(errorHandler);
 
-// start server
 app.listen(port,() => {
 	console.log(`Server is running at http://localhost:${port}`);
 });

@@ -8,6 +8,7 @@ import express from "express";
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function searchArtists(req, res, next){
 	// searchArtists procedure, see /database_docs/procedures/searchArtists.md
@@ -27,6 +28,7 @@ export async function searchArtists(req, res, next){
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function searchAlbums(req, res, next){
 	// searchAlbums procedure, see /database_docs/procedures/searchAlbums.md
@@ -46,6 +48,7 @@ export async function searchAlbums(req, res, next){
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function searchTracks(req, res, next){
 	// searchTracks procedure, see /database_docs/procedures/searchTracks.md

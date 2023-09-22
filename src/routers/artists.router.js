@@ -3,7 +3,6 @@ import express from "express"
 
 export const artistsRouter = express.Router();
 
-// artists routes
 artistsRouter.get("/", getAllArtists);
 artistsRouter.get("/:id", getArtistById);
 artistsRouter.post("/", createArtist);
