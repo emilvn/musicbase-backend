@@ -1,17 +1,17 @@
-import { 
-  getAllAlbums, 
+import {
+  getAllAlbums,
   getSpecificAlbum,
-  updateAlbumByID, 
+  updateAlbumByID,
   deleteAlbumByID,
-  createAlbum
+  createAlbum, getAllAlbumsComplete
 } from "../controllers/albums.controller.js";
 
 import express from "express";
 
 export const albumsRouter = express.Router();
 
-// albums routes
 albumsRouter.get("/", getAllAlbums);
+albumsRouter.get("/complete", getAllAlbumsComplete);
 albumsRouter.get("/:id", getSpecificAlbum);
 albumsRouter.post("/", createAlbum);
 albumsRouter.put("/:id", updateAlbumByID);

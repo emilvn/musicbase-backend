@@ -5,10 +5,29 @@ import { prepareAlbumData } from "./helpers/prepareAlbumData.js";
 import express from "express";
 
 /**
+ * gets complete album data, including complete data for all artists and tracks relating to the album
+ * @param {express.Request} req incoming request object
+ * @param {express.Response} res outgoing response, for sending response to client
+ * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
+ */
+export async function getAllAlbumsComplete(req, res, next){
+    // GetAlbumsWithArtistsAndTracks procedure, see /database_docs/procedures/GetAlbumsWithArtistsAndTracks.md
+    const query = "CALL GetAlbumsWithArtistsAndTracks();";
+    try{
+        const [result] = await connection.execute(query);
+        res.json(result[0]);
+    }catch(err){
+        next(err);
+    }
+}
+
+/**
  * gets album data from the database and responds with it
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getAllAlbums(req, res, next) {
     // getAlbums procedure, see /database_docs/procedures/getAlbums.md
@@ -26,6 +45,7 @@ export async function getAllAlbums(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function getSpecificAlbum(req, res, next) {
     const id = req.params.id;
@@ -47,6 +67,7 @@ export async function getSpecificAlbum(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function createAlbum(req, res, next){
     const albumData = prepareAlbumData(req.body);
@@ -67,6 +88,7 @@ export async function createAlbum(req, res, next){
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function updateAlbumByID(req, res, next) {
     const id = req.params.id;
@@ -87,6 +109,7 @@ export async function updateAlbumByID(req, res, next) {
  * @param {express.Request} req incoming request object
  * @param {express.Response} res outgoing response, for sending response to client
  * @param {express.NextFunction} next callback function to pass control to next middleware
+ * @returns {Promise<void>}
  */
 export async function deleteAlbumByID(req, res, next) {
     const id = req.params.id;
