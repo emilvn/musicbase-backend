@@ -1,6 +1,11 @@
 # musicbase-backend
 
-## Installation
+## Deployed
+Frontend: [musicbase-frontend](https://emilvn.github.io/musicbase-frontend)  
+Backend: [musicbase-backend-azure](https://musicbase-backend.azurewebsites.net)
+
+## Local
+### Installation
     git clone https://www.github.com/emilvn/musicbase-backend.git
     cd musicbase-backend/
     npm install
