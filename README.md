@@ -10,15 +10,22 @@ Backend: [musicbase-backend-azure](https://musicbase-backend.azurewebsites.net)
     cd musicbase-backend/
     npm install
 
-Create an .env file at the root of project, and define these values
+Create an .env file at the root of project, and define these values:  
+#### Use your own local database
 
     MYSQL_USER=root
     MYSQL_PASSWORD=database-password
-    MYSQL_DATABASE=musicbase_db
+    MYSQL_DATABASE=database-name
     MYSQL_PORT=3306
     MYSQL_HOST=localhost
-
-replace "database-password" with the password to your mysql server.
+replace "database-password" with the password to your mysql server.  
+replace "database-name" with the name of your database.
+#### Use the deployed database
+    MYSQL_USER=VEMC
+    MYSQL_PASSWORD=********
+    MYSQL_DATABASE=musicbase_db
+    MYSQL_PORT=3306
+    MYSQL_HOST=musicbase-database.mysql.database.azure.com
 
 ## Start server
 To start the server simply run
@@ -34,3 +41,4 @@ if you get a log in the CLI saying "Server running on http://localhost:3000", yo
 
 ## Client
 See repository [musicbase-frontend](https://github.com/emilvn/musicbase-frontend)
+Deployed at: https://emilvn.github.io/musicbase-frontend
