@@ -52,7 +52,7 @@ export async function searchAlbums(req, res, next){
  */
 export async function searchTracks(req, res, next){
 	// searchTracks procedure, see /database_docs/procedures/searchTracks.md
-	const query = "CALL searchTracks(?);"
+	const query = "CALL searchTracks(?);";
 	const value = req.query.q
 	try{
 		validateSearchQuery(value);
